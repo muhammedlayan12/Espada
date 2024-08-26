@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Espada</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="icon" href="443734237_2338446416359428_2588800890684334941_n.jpg" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+   <style>
+   
+.dark {
+            background-color: #1a202c;
+            color: #cbd5e0;
+        }
+
+        .slide-container {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .slide {
+            display: inline-block;
+            padding: 0 20px;
+            animation: slide 10s infinite linear;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+/* Styles for the corner window */
+.corner-window {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 100;
+    display: none; /* Initially hidden */
+    width: 300px; /* Adjust width as needed */
+    border-radius: 10px;
+}
+
+.corner-window button {
+    display: block;
+    background-color: #4a5568;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.corner-window button:hover {
+    background-color: #2d3748;
+}
+
+.corner-window button span {
+    font-size: 1.2rem;
+}
+
+#selectedProducts {
+    margin-bottom: 20px;
+}
+
+/* Styles for the modal */
+.modal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 50;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Styles for the confirmation message */
+.confirmation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+  /* Basic styles for the toggle */
+  .toggle {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    /* Hide the checkbox */
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* Style the toggle switch */
+    .toggle-label {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #2196F3;
+      transition: background-color 0.4s;
+      border-radius: 34px;
+    }
+
+    /* Change background color when toggled */
+    .toggle input:checked + .toggle-label {
+      background-color: #21f35d;
+    }
+
+    /* Rounded toggle handle */
+    .toggle-label::before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: transform 0.4s;
+      border-radius: 50%;
+    }
+
+    /* Move handle to the right when toggled */
+    .toggle input:checked + .toggle-label::before {
+      transform: translateX(26px);
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #000000;
+      color: #fff;
+    }
+
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: #ccc;
+      transition: background-color 0.4s;
+    }
+
+    .dark-mode .box {
+      background-color: #444;
+    }
+
+    
+   </style>
+</head>
+<body class="bg-white text-gray-800">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-6 flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="443734237_2338446416359428_2588800890684334941_n.jpg" alt="Brand Logo" class="h-8 mr-2 rounded-full">
+                <a href="index.html" class="text-xl font-bold text-gray-800">Espada</a>
+            </div>
+    
+            <!-- Hamburger Menu Icon -->
+            <div id="hamburgerMenu" class="md:hidden hidden">
+                <button id="hamburgerIcon" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <i class="fas fa-bars fa-2x"></i>
+                </button>
+            </div>
+    
+            <!-- Navigation Links -->
+            <nav id="navMenu" class="hidden md:flex">
+                <ul class="flex space-x-4">
+                    <li><a href="index.html" class="text-gray-600 hover:text-gray-800">Home</a></li>
+                    <li><a href="shop.html" class="text-gray-600 hover:text-gray-800">Shop</a></li>
+                    <li><a href="about.html" class="text-gray-600 hover:text-gray-800">About</a></li>
+                    <li><a href="contact.html" class="text-gray-600 hover:text-gray-800">Contact</a></li>
+                </ul>
+            </nav>
+    
+            <div class="toggle">
+                <input type="checkbox" id="toggle-checkbox">
+                <label for="toggle-checkbox" class="toggle-label"></label>
+              </div>
+    </header>
+    
+  <!-- Main Content -->
+<main class="container mx-auto px-4 py-12">
+
+    <!-- Shop Section -->
+    <section>
+        <h2 class="text-3xl font-bold text-center mb-8">Shop</h2>
+           <!-- Texture Polos Section -->
+           <section class="mt-12">
+            <div class="slide-container bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+                <div class="slide">TEXTURE POLO 👇</div>
+            </div>
+        </section> 
+        <BR>
+            <br> 
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="441265905_744305364564337_6439235488076749947_n.jpg" alt="Product 1" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURED P0LO | WHITE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$29.99</p>
+                        <button onclick="openCornerWindow()" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</button>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="h.jpg" alt="Product 2" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURED POLO | BLACK</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$39.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 3 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="g.jpg" alt="Product 3" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURED PLO | BROWN</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$49.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 4 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="d.jpg" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURED POLO | BLACK</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Additional Products -->
+                <!-- Product 5 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="w.jpg" alt="Product 5" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURE STRECHED POLO | BLACK</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$29.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 6 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="q.jpg" alt="Product 6" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURED STRECHED POLO | WHITE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$39.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 7 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="k.jpg" alt="Product 7" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">TEXTURED STRECHED POLO | BROWN</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$49.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 8 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="b (2).jpg" alt="Product 8" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">PACK OF POLO'S</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+          <!-- Texture Polos Section -->
+          <section class="mt-12">
+            <div class="slide-container bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+                <div class="slide">DROP NEEDLE ZIP POLO 👇</div>
+            </div>
+        </section> 
+        <BR>
+            <br> 
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="2.jpg" alt="Product 1" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">DROP NEEDLE ZIP POLO | WHITE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$29.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="8.jpg" alt="Product 2" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">DROP NEEDLE ZIP POLO | BLACK</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$39.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 3 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="3.jpg" alt="Product 3" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">DROP NEEDLE ZIP POLO | LIGHT BLUE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$49.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 4 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="1 (2).jpg" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">DROP NEEDLE ZIP POLO | BLUE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 5 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="01.JPG" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">POLO | LIGHT BLUE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 6 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="02.JPG" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">POLO | BLACK</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE.</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 7 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="03.JPG" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">POLO | WHITE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 8 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="04.JPG" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">POLO | DARK BLUE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+
+                <!-- Additional Products -->
+            
+            </div>
+        </section>
+
+        <br>
+        <br>
+         <!-- Texture Polos Section -->
+         <section class="mt-12">
+            <div class="slide-container bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div><div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+                <div class="slide">T-SHIRT 👇</div>
+            </div>
+        </section> 
+        <BR>
+            <br> 
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="001.jpg" alt="Product 1" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">STRECHED CHECK T-SHIRT | DARK BLUE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$29.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="002.jpg" alt="Product 2" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">STRECHED T-SHIRT | WHITE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$39.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 3 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="003.jpg" alt="Product 3" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">T-SHIRT | LIGHT BLUE</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$49.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                <!-- Product 4 -->
+                <div class="border rounded-lg overflow-hidden shadow-lg">
+                    <img src="004.jpg" alt="Product 4" class="w-full h-84 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">T-SHIRT | LIGHT BROWN</h3>
+                        <p class="text-gray-600 mb-4">VERY BEST QUALITY TEXTURED POLOS IN UNBEATABLE RPICE</p>
+                        <p class="text-gray-800 font-bold">$59.99</p>
+                        <a href="#" class="mt-2 inline-block bg-gray-800 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition">Add to Cart</a>
+                    </div>
+                </div>
+                
+
+                <!-- Additional Products -->
+            
+            </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="flex flex-col items-center md:items-start">
+            <img src="443734237_2338446416359428_2588800890684334941_n.jpg" alt="Brand Logo" class="h-12 mb-4 rounded-full">
+            <p>&copy; 2024 Espada. All rights reserved.</p>
+        </div>
+        <div class="flex flex-col items-center md:items-start">
+            <h3 class="text-lg font-bold mb-2">Quick Links</h3>
+            <ul>
+                <li><a href="main.html" class="text-gray-400 hover:text-gray-200">Home</a></li>
+                <li><a href="shop.html" class="text-gray-400 hover:text-gray-200">Shop</a></li>
+                <li><a href="about.html" class="text-gray-400 hover:text-gray-200">About</a></li>
+                <li><a href="contact.html" class="text-gray-400 hover:text-gray-200">Contact</a></li>
+            </ul>
+        </div>
+        <div class="flex flex-col items-center md:items-start">
+            <h3 class="text-lg font-bold mb-2">Contact Us</h3>
+            <p>Our Location: <a href="#" class="text-gray-400 hover:text-gray-200">Karachi,Sindh Pakistan</a></p>
+            <p>Email: <a href="mailto:info@espada.com" class="text-gray-400 hover:text-gray-200">info@espada.com</a></p>
+            <p>Phone: <a href="tel:+923128854302" class="text-gray-400 hover:text-gray-200">+923128854302</a></p>
+        </div>
+    </div>
+</footer>
+
+<!-- Phone Icon -->
+<div class="fixed bottom-4 right-4">
+    <a href="tel:+923128854302" class="flex items-center justify-center bg-black rounded-full p-2">
+        <i class="fas fa-phone text-green-500 text-2xl"></i>
+    </a>
+</div>
+
+    
+
+
+</body>
+<script>
+
+
+let products = []; // Array to store selected products
+let productCount = 1;
+
+function addProduct() {
+    const product = {
+        name: 'Product Name', // Replace with actual product name
+        image: 'product.jpg' // Replace with actual product image URL
+    };
+    
+    products.push(product);
+    updateSelectedProducts();
+    openCornerWindow();
+}
+
+function updateSelectedProducts() {
+    const selectedProductsContainer = document.getElementById('selectedProducts');
+    selectedProductsContainer.innerHTML = ''; // Clear previous products
+    
+    products.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add('selected-product');
+        productElement.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover mr-2">
+            <span>${product.name}</span>
+        `;
+        selectedProductsContainer.appendChild(productElement);
+    });
+}
+
+function openCornerWindow() {
+    document.getElementById('cornerWindow').style.display = 'block';
+}
+
+function increaseProductCount() {
+    productCount++;
+    document.getElementById('productCount').textContent = productCount;
+}
+
+function decreaseProductCount() {
+    if (productCount > 1) {
+        productCount--;
+        document.getElementById('productCount').textContent = productCount;
+    }
+}
+
+function openCheckoutModal() {
+    document.getElementById('cornerWindow').style.display = 'none'; // Hide corner window
+    document.getElementById('cartModal').style.display = 'block';   // Show checkout modal
+    
+    // Display selected product image (first product for simplicity)
+    if (products.length > 0) {
+        const selectedProductImage = products[0].image;
+        document.getElementById('selectedProductImage').src = selectedProductImage;
+    }
+}
+
+function closeModal() {
+    document.getElementById('cartModal').style.display = 'none';
+}
+
+function togglePaymentDetails(paymentMethod) {
+    const paymentDetails = document.getElementById('paymentDetails');
+    const accountNumber = document.getElementById('accountNumber');
+
+    if (paymentMethod === 'cash') {
+        paymentDetails.classList.add('hidden');
+    } else {
+        paymentDetails.classList.remove('hidden');
+        if (paymentMethod === 'easypaisa') {
+            accountNumber.textContent = 'EasyPaisa Account Number: 03128854302';
+        } else if (paymentMethod === 'jazzcash') {
+            accountNumber.textContent = 'JazzCash Account Number: 03128854302';
+        } else if (paymentMethod === 'bank') {
+            accountNumber.textContent = 'Bank Account Number: 3342667800390';
+        }
+    }
+}
+
+function submitForm() {
+    // Perform form submission logic (e.g., sending data to the server)
+    
+    // Show confirmation message
+    document.getElementById('formContainer').classList.add('hidden');
+    document.getElementById('confirmationMessage').classList.remove('hidden');
+
+    // Close modal after a few seconds
+    setTimeout(() => {
+        closeModal();
+        document.getElementById('formContainer').classList.remove('hidden');
+        document.getElementById('confirmationMessage').classList.add('hidden');
+    }, 3000);
+}
+// Function to toggle the visibility of the navigation menu
+function toggleMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('hidden');
+}
+
+// Function to detect screen size and show the hamburger menu on smaller screens
+function handleResize() {
+    const navMenu = document.getElementById('navMenu');
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    if (window.innerWidth <= 768) {
+        navMenu.classList.add('hidden');
+        hamburgerMenu.classList.remove('hidden');
+    } else {
+        navMenu.classList.remove('hidden');
+        hamburgerMenu.classList.add('hidden');
+    }
+}
+
+// Add event listeners
+window.addEventListener('resize', handleResize);
+document.getElementById('hamburgerIcon').addEventListener('click', toggleMenu);
+
+// Initial check
+handleResize();
+
+  // JavaScript to toggle dark mode
+  const toggleCheckbox = document.getElementById('toggle-checkbox');
+    const body = document.body;
+
+    toggleCheckbox.addEventListener('change', function() {
+      if (toggleCheckbox.checked) {
+        body.classList.add('dark-mode');
+      } else {
+        body.classList.remove('dark-mode');
+      }
+    });
+
+</script>
+</html>
